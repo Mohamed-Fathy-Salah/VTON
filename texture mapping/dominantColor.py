@@ -1,4 +1,4 @@
-from cv2 import cv2
+import cv2
 import numpy as np
 
 def show(name, image):
@@ -7,24 +7,16 @@ def show(name, image):
 
 input_img = cv2.imread("images/shirt.jpg")
 mask_img = cv2.imread("images/mask.jpg", cv2.IMREAD_GRAYSCALE)
-# show("input", input_img)
-avg_color = np.zeros(3)
-cnt = 0
-for i in range(mask_img.shape[0]):
-    for j in range(mask_img.shape[1]):
-        if mask_img[i][j] != 0:
-            avg_color = avg_color + input_img[i][j]
-            cnt = cnt + 1
 
-avg_color /= cnt
+masked = cv2.bitwise_and(input_img, input_img, mask=mask_img)
+show("input", masked)
 
-print("----")
-print(avg_color)            
+cnt = len(masked[np.max(masked, axis=2) > 0])
+avg_color = np.sum(np.sum(masked, axis=0), axis=0) / cnt
+
+print(avg_color)
+
 avg_img = input_img.copy()
+avg_img[0:60,0:60] = avg_color
 
-for i in range(60):
-    for j in range(60):
-        avg_img[i][j] = avg_color
-
-# show("avg", avg_img)
-
+show("avg", avg_img)

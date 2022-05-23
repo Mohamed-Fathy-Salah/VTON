@@ -5,8 +5,8 @@ def show(name, image):
     cv2.imshow(name, image)
     cv2.waitKey(0)
 
-input_img = cv2.imread("shirt.jpg")
-mask_img = cv2.imread("mask.jpg", cv2.IMREAD_GRAYSCALE)
+input_img = cv2.imread("images/shirt.jpg")
+mask_img = cv2.imread("images/mask.jpg", cv2.IMREAD_GRAYSCALE)
 # show("input", input_img)
 avg_color = np.zeros(3)
 cnt = 0

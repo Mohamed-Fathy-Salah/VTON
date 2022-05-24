@@ -1,0 +1,9 @@
+/node_modules
+__pycache__/
+/src/TailorNet/*.pyc
+/src/TailorNet/trainer/test_trainer.py
+/src/TailorNet/psbody/
+/src/TailorNet/*v1.0.0.pkl
+/src/TailorNet/data/
+/src/TailorNet/weights/
+/src/xxxx/

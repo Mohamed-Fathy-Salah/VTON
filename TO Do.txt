@@ -1,0 +1,6 @@
+- Faster Run
+- Download Dataset
+- Adding Garments
+- Adding Texture
+- Adding Fit Map
+- Improve three js environment

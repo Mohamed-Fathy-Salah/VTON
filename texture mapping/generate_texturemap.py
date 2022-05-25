@@ -3,7 +3,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 def show_image(image, title=None):
-    plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    # plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    plt.imshow(image)
     plt.xticks([]), plt.yticks([])
     plt.title(title)
     plt.show()
@@ -32,10 +33,8 @@ def equal(a, b):
     val = np.sum(np.square(a - b))
     return val < 20000
 
-def get_logo(image, mask):
+def get_logo(image, mask, dom):
     out_img = image.copy()
-
-    dom = dominant_color(image, mask)
 
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
@@ -69,7 +68,8 @@ if __name__ == "__main__":
 
     image = cv2.imread(image_path)
     mask = get_mask(image)
-    logo = get_logo(image, mask)
+    dom_color = dominant_color(image, mask)
+    logo = get_logo(image, mask, dom_color)
 
     # show_image(image, "image")
     # show_image(mask, "mask")
@@ -78,14 +78,17 @@ if __name__ == "__main__":
     shirt_pos = pos(mask)
     logo_pos = pos(logo)
 
-    print(shirt_pos)
-    print(logo_pos)
+    # print(shirt_pos)
+    # print(logo_pos)
 
     wm, hm = relative_scale(shirt_pos, logo_pos)
     xm, ym = relative_pos(shirt_pos, logo_pos)
     
-    coord = cv2.imread("./images/old-t-shirt_female.png")
+    texture_map = np.zeros((1024, 1024, 3)) 
+    texture_map[:,:] = dom_color
+    # TODO : put logo at desired position in texture_map
+
+    # print(xm, ym, wm, hm)
+    # cv2.rectangle(coord, (xm, ym), (xm + wm, ym + hm), (0,0,255), 2)
+    # show_image(coord, "coord")
     
-    print(xm, ym, wm, hm)
-    cv2.rectangle(coord, (xm, ym), (xm + wm, ym + hm), (0,0,255), 2)
-    show_image(coord, "coord")

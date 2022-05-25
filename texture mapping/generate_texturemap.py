@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
-from PIL import Image
 
 def show_image(image, title=None):
     # plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -88,19 +87,20 @@ if __name__ == "__main__":
     
     
     # crop logo
-    # logo = logo[logo_pos[1]:logo_pos[1] + logo_pos[3], logo_pos[0]:logo_pos[0] + logo_pos[2]]
+    logo = logo[logo_pos[1]:logo_pos[1] + logo_pos[3], logo_pos[0]:logo_pos[0] + logo_pos[2]]
+    logo_mask = logo_mask[logo_pos[1]:logo_pos[1] + logo_pos[3], logo_pos[0]:logo_pos[0] + logo_pos[2]]
 
+    logo = cv2.resize(logo ,(wm, hm))
+    logo_mask = cv2.resize(logo_mask ,(wm, hm))
 
     texture_map = np.zeros((1024, 1024, 3)) 
     texture_map[:,:] = dom_color
 
     # TODO : put logo at desired position in texture_map
-    for i in range(logo_pos[3]):
-        for j in range(logo_pos[2]):
-            ii = i + logo_pos[1]
-            jj = j + logo_pos[0]
-            if logo_mask[ii][jj] != 0:
-                texture_map[ym + i][xm + j] = logo[ii][jj] 
+    for i in range(logo_mask.shape[0]):
+        for j in range(logo_mask.shape[1]):
+            if logo_mask[i][j] != 0:
+                texture_map[ym + i][xm + j] = logo[i][j] 
 
     cv2.imwrite("./results/hi.png", texture_map)
     # print(xm, ym, wm, hm)

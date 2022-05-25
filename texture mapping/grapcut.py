@@ -25,7 +25,7 @@ show_image(original_image, "Original Image")
 
 # Binarize input image
 gray_image = cv2.cvtColor(original_image, cv2.COLOR_RGB2GRAY)
-show_image(gray_image, "Gray image")
+# show_image(gray_image, "Gray image")
 
 binarized_image = cv2.adaptiveThreshold(
     gray_image,
@@ -35,7 +35,7 @@ binarized_image = cv2.adaptiveThreshold(
     blockSize=9,
     C=7,
 )
-show_image(255 * binarized_image, "Binarized Image")
+# show_image(255 * binarized_image, "Binarized Image")
 
 # Set GrabCut parameters
 cv2.setRNGSeed(0)
@@ -65,7 +65,7 @@ original_image_with_boundary_rectangle = cv2.rectangle(
     (255, 0, 0),
     1,
 )
-show_image(original_image_with_boundary_rectangle, "Image with boundary rectangle")
+# show_image(original_image_with_boundary_rectangle, "Image with boundary rectangle")
 
 # GrabCut initialized only with a rectangle
 
@@ -92,13 +92,13 @@ grabcut_mask = np.where((mask == cv2.GC_PR_BGD) | (mask == cv2.GC_BGD), 0, 1).as
 )
 segmented_image = original_image.copy() * grabcut_mask[:, :, np.newaxis]
 
-show_image(segmented_image, "GrabCut initialized with rectangle")
+# show_image(segmented_image, "GrabCut initialized with rectangle")
 
 # GrabCut with initial mask
 
 # Initialize the mask with known information
 initial_mask = binarized_image.copy()
-show_image(255 * initial_mask, "Initial mask")
+# show_image(255 * initial_mask, "Initial mask")
 
 mask = np.zeros((height, width), np.uint8)
 mask[:] = cv2.GC_PR_BGD
@@ -121,7 +121,7 @@ cv2.grabCut(
 grabcut_mask = np.where((mask == cv2.GC_PR_BGD) | (mask == cv2.GC_BGD), 0, 1).astype(
     "uint8"
 )
-show_image(255 * grabcut_mask, "GrabCut mask")
+# show_image(255 * grabcut_mask, "GrabCut mask")
 
 
 grabcut_image = original_image.copy() * grabcut_mask[:, :, np.newaxis]

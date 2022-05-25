@@ -1,7 +1,4 @@
-from turtle import hideturtle
 import cv2 as cv 
-import numpy as np
-import matplotlib.pyplot as plt
 
 def pos(mask, img):
     # cnts = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
@@ -25,7 +22,6 @@ def pos(mask, img):
 mask = cv.imread("./images/mask.png", cv.IMREAD_GRAYSCALE)
 img = cv.imread("./images/dubai.jpg")
 logo = cv.imread("results/light.png", cv.IMREAD_GRAYSCALE)
-
 
 pos(mask, img)
 pos(logo, img)

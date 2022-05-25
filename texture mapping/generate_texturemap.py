@@ -31,9 +31,6 @@ def dominant_color(image, mask):
     avg_color = np.sum(np.sum(masked, axis=0), axis=0) / cnt
     return avg_color
 
-def equal(a, b):
-    return np.sum(np.square(a - b)) < 20000
-
 def get_logo_mask(image, mask, dom):
 
     image = (np.sum(np.square(np.subtract(image, dom)), axis= 2) > 20000) * 255
@@ -59,10 +56,9 @@ def relative_scale(shirt, logo):
 # (xl - xs) / ws * wc + xc
 def relative_pos(shirt, logo):
     return int((logo[0] - shirt[0]) / shirt[2] * front_shirt_coordinates[2] + front_shirt_coordinates[0]), int((logo[1] - shirt[1]) / shirt[3] * front_shirt_coordinates[3] + front_shirt_coordinates[1])
-    # return (logo[0] - shirt[0]) / shirt[2] * front_shirt_coordinates[2], (logo[1] - shirt[1]) / shirt[3] *front_shirt_coordinates[3]
 
 if __name__ == "__main__":
-    image_path = "./images/shirt.jpg"
+    image_path = "./images/lungs.jpg"
 
     image = cv2.imread(image_path)
 
@@ -96,11 +92,8 @@ if __name__ == "__main__":
     texture_map = np.zeros((1024, 1024, 3)) 
     texture_map[:,:] = dom_color
 
-    # TODO : put logo at desired position in texture_map
-    for i in range(logo_mask.shape[0]):
-        for j in range(logo_mask.shape[1]):
-            if logo_mask[i][j] != 0:
-                texture_map[ym + i][xm + j] = logo[i][j] 
+    logo[logo_mask == 0] = dom_color
+    texture_map[ym : ym + logo.shape[0], xm : xm + logo.shape[1]] = logo
 
     cv2.imwrite("./results/hi.png", texture_map)
     # print(xm, ym, wm, hm)

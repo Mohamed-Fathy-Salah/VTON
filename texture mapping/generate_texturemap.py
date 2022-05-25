@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+from PIL import Image
 
 def show_image(image, title=None):
     # plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -86,12 +87,22 @@ if __name__ == "__main__":
     xm, ym = relative_pos(shirt_pos, logo_pos)
     
     
-    cv2.imwrite("./results/hi.png", logo)
+    # crop logo
+    # logo = logo[logo_pos[1]:logo_pos[1] + logo_pos[3], logo_pos[0]:logo_pos[0] + logo_pos[2]]
+
 
     texture_map = np.zeros((1024, 1024, 3)) 
     texture_map[:,:] = dom_color
+
     # TODO : put logo at desired position in texture_map
-    
+    for i in range(logo_pos[3]):
+        for j in range(logo_pos[2]):
+            ii = i + logo_pos[1]
+            jj = j + logo_pos[0]
+            if logo_mask[ii][jj] != 0:
+                texture_map[ym + i][xm + j] = logo[ii][jj] 
+
+    cv2.imwrite("./results/hi.png", texture_map)
     # print(xm, ym, wm, hm)
     # cv2.rectangle(texture_map, (xm, ym), (xm + wm, ym + hm), (0,0,255), 2)
     # cv2.imwrite("./results/hi.png", texture_map)

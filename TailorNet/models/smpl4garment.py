@@ -2,7 +2,6 @@ import os
 import pickle
 import chumpy as ch
 import numpy as np
-import cv2
 from psbody.mesh import Mesh
 from smpl_lib.ch_smpl import Smpl
 from utils.smpl_paths import SmplPaths

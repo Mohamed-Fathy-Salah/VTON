@@ -15,6 +15,7 @@ from visualization.vis_utils import get_specific_pose
 from visualization.vis_utils import get_specific_shape
 
 from smpl_lib.ch_smpl import Smpl
+from psbody.mesh import Mesh
 
 # Set output path where inference results will be stored
 OUT_PATH = "/content/output"

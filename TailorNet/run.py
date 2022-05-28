@@ -14,18 +14,8 @@ from utils.interpenetration import remove_interpenetration_fast
 from visualization.vis_utils import get_specific_pose
 from visualization.vis_utils import get_specific_shape
 
-from smpl_lib.ch_smpl import Smpl
-from psbody.mesh import Mesh
-
 # Set output path where inference results will be stored
 OUT_PATH = "/content/output"
-
-def gen_body(theta=get_specific_pose(0),beta=get_specific_shape('mean'),gender='female'):
-    smpl_model = SmplPaths(gender=gender).get_hres_smpl_model_data()
-    smpl_base = Smpl(smpl_model)
-
-    body_m = Mesh(v=self.smpl_base.r, f=self.smpl_base.f)
-    body.write_obj("../models/obj/body.obj")
 
 def gen_gar(theta,beta,gender,garment_class,filename,save_body):
     gamma = get_style('000',garment_class=garment_class,gender=gender)

@@ -36,6 +36,5 @@ def generate_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean')
 
     pred_gar.write_obj(OUT_PATH + filename + ".obj")
 
-
 if __name__ == '__main__':
     generate_garment()

@@ -57,19 +57,17 @@ items = [
 users = pd.read_csv('users-dataset.csv')
 users_arr = users.to_numpy()
 
-interactions_arr = np.zeros((len(users_arr), 9), dtype=object)
-
 
 def input_data(h, w, f):
     height = driver.find_element_by_id('uclw_form_height')
     height.clear()
-    time.sleep(0.5)
+    # time.sleep(0.25)
     height.send_keys(h)
     weight = driver.find_element_by_id('uclw_form_weight')
     weight.clear()
-    time.sleep(0.5)
+    # time.sleep(0.25)
     weight.send_keys(w)
-    time.sleep(1)
+    # time.sleep(0.5)
     loose = driver.find_element_by_xpath(
         '//*[@id="uclw_block_fit"]/div[2]/div[2]/div[3]')
     tight = driver.find_element_by_xpath(
@@ -89,8 +87,8 @@ def input_data(h, w, f):
 
 
 def get_results():
-    result_labels = driver.find_elements_by_class_name('uclw_label')
     time.sleep(2)
+    result_labels = driver.find_elements_by_class_name('uclw_label')
     size1 = result_labels[0].text
     percentage_1 = driver.find_elements(
         By.CLASS_NAME, 'uclw_bar_right')[0].get_attribute("textContent")
@@ -100,61 +98,85 @@ def get_results():
     return size1, percentage_1, size2, percentage_2
 
 
-count = 11
+count = 0
 while True:
     try:
-        for user in range(count, 13):
+        for user in range(count, 999):
+            start = time.time()
+            interactions_arr = np.zeros((1, 9), dtype=object)
             count += 1
-            # product_id = np.random.randint(0, len(items))
-            product_id = 2
+            product_id = np.random.randint(0, len(items))
             driver.get(items[product_id])
             h = users_arr[user][4]
             w = users_arr[user][5]
             f = users_arr[user][3]
             try:
+                id = items[product_id].split('v1=')[1].split('&')[0]
                 find_mysize_button = driver.find_element_by_xpath(
-                    '//*[@id="product-detail-size-selector-product-detail-product-size-selector-148602456-menu"]/div/div/button[1]')
+                    f'//*[@id="product-detail-size-selector-product-detail-product-size-selector-{id}-menu"]/div/div/button[1]')
 
-                driver.implicitly_wait(10)  # seconds
+                driver.implicitly_wait(2)  # seconds
                 find_mysize_button.click()
                 input_data(h, w, f)
-                time.sleep(2)
 
             except:
                 start_over = driver.find_element_by_xpath(
                     '//*[@id="uclw_animate_results"]/div[4]/div')
                 start_over.click()
-                time.sleep(2)
+                time.sleep(1)
                 input_data(h, w, f)
-                time.sleep(2)
             try:
+                time.sleep(2)
                 size_1, percentage_1, size_2, percentage_2 = get_results()
+                print(size_1, percentage_1, size_2, percentage_2)
             except:
+                print("Error ")
                 continue
 
             ############################################
-            interactions_arr[users_arr[user][0]-1][1] = product_id
-            interactions_arr[users_arr[user][0] -
-                             1][2] = users_arr[user][3]  # fit_prefrence
-            interactions_arr[users_arr[user][0] -
-                             1][0] = users_arr[user][0]  # id
-            interactions_arr[users_arr[user][0] -
-                             1][3] = users_arr[user][4]  # weight
-            interactions_arr[users_arr[user][0] -
-                             1][4] = users_arr[user][5]  # height
-            interactions_arr[users_arr[user][0]-1][5] = size_1
-            interactions_arr[users_arr[user][0]-1][6] = percentage_1
-            interactions_arr[users_arr[user][0]-1][7] = size_2
-            interactions_arr[users_arr[user][0]-1][8] = percentage_2
+            interactions_arr[0][1] = product_id
+            interactions_arr[0][2] = users_arr[user][3]
+            interactions_arr[0][0] = users_arr[user][0]
+            interactions_arr[0][4] = users_arr[user][4]
+            interactions_arr[0][3] = users_arr[user][5]
+            interactions_arr[0][5] = size_1
+            interactions_arr[0][6] = percentage_1
+            interactions_arr[0][7] = size_2
+            interactions_arr[0][8] = percentage_2
+
+            try:
+                start_saving = time.time()
+                df = pd.DataFrame(interactions_arr)
+                pd.DataFrame.to_csv(df, 'interactions-dataset.csv',
+                                    mode='a', index=False, header=False)
+                end_saving = time.time()
+
+            except:
+                print("Error happened")
+
+            # interactions_arr[users_arr[user][0]-1][1] = product_id
+            # interactions_arr[users_arr[user][0]-1][2] = users_arr[user][3]  # fit_prefrence
+            # interactions_arr[users_arr[user][0]-1][0] = users_arr[user][0]  # id
+            # interactions_arr[users_arr[user][0] -1][3] = users_arr[user][4]  # weight
+            # interactions_arr[users_arr[user][0] -1][4] = users_arr[user][5]  # height
+            # interactions_arr[users_arr[user][0]-1][5] = size_1
+            # interactions_arr[users_arr[user][0]-1][6] = percentage_1
+            # interactions_arr[users_arr[user][0]-1][7] = size_2
+            # interactions_arr[users_arr[user][0]-1][8] = percentage_2
 
             print(f"user {count} finished")
+            end = time.time()
+            print(f'took {end -start} ')
 
     except:
+        print("outer exception")
         continue
     break
 
 
-interactions = pd.DataFrame(interactions_arr, columns=[
-    'user_id', 'product_id', 'fit_preferences', 'weight', 'height', 'size_1', 'presentage_1', 'size_2', 'presentage_2'])
-pd.DataFrame.to_csv(interactions, 'interactions-dataset.csv',
-                    mode='a', index=False)
+# interactions = pd.DataFrame(interactions_arr, columns=[
+#     'user_id', 'product_id', 'fit_preferences', 'weight', 'height', 'size_1', 'presentage_1', 'size_2', 'presentage_2'])
+# pd.DataFrame.to_csv(interactions, 'interactions-dataset.csv',
+#                     mode='a', index=False)
+
+# interactions.to_csv('GFG.csv', mode='a', index=False, header=False)

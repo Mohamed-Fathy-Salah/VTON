@@ -49,14 +49,14 @@ find_mysize_button.click()
 driver.implicitly_wait(10)  # seconds
 
 
-def input_data():
+def input_data(w, h):
     height = driver.find_element_by_id('uclw_form_height')
     height.send_keys(0)
-    height.send_keys(170)
+    height.send_keys(h)
     weight = driver.find_element_by_id('uclw_form_weight')
     weight.clear()
     time.sleep(2)
-    weight.send_keys(75)
+    weight.send_keys(w)
     time.sleep(2)
     fit_pereferences = driver.find_element_by_xpath(
         '//*[@id="uclw_block_fit"]/div[2]/div[2]/div[3]')

@@ -14,7 +14,7 @@ from utils.interpenetration import remove_interpenetration_fast
 
 # Set output path where inference results will be stored
 OUT_PATH = "/content/output"
-def generate_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='female', garment_class='t-shirt', filename='out'):
+def generate_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='male', garment_class='short-pant', filename='out'):
     gamma = get_style('000',garment_class=garment_class,gender=gender)
     tn_runner = get_tn_runner(gender=gender, garment_class=garment_class)
     theta_normalized = normalize_y_rotation(theta)

@@ -6,7 +6,7 @@ import time
 from models.tailornet_model import get_best_runner as get_tn_runner
 from models.smpl4garment import SMPL4Garment
 from utils.rotation import normalize_y_rotation
-from utils.smple_paths import SmplPaths
+from utils.smpl_paths import SmplPaths
 
 # from dataset.canonical_pose_dataset import get_style, get_shape
 from dataset.canonical_pose_dataset import get_style

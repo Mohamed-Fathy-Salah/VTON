@@ -7,7 +7,7 @@ DATA_DIR = '/content/data'
 
 # Set the paths to SMPL model
 SMPL_PATH_NEUTRAL = '/content/models/basicModel_neutral_lbs_10_207_0_v1.0.0.pkl'
-SMPL_PATH_MALE = '/content/models/basicModel_m_lbs_10_207_0_v1.0.0.pkl'
+SMPL_PATH_MALE = '/content/models/basicmodel_m_lbs_10_207_0_v1.0.0.pkl'
 SMPL_PATH_FEMALE = '/content/models/basicModel_f_lbs_10_207_0_v1.0.0.pkl'
 
 # Log directory where training logs, checkpoints and visualizations will be stored

@@ -13,13 +13,29 @@ from utils.interpenetration import remove_interpenetration_fast
 
 OUT_PATH = "/content/output"
 
-def write_obj(filename, mesh):
-    pass
+def write_obj(filename, mesh, garment=None, gender=None):
+    with open(filename, 'w') as output:
+        for r in mesh.v:
+            output.write('v %f %f %f\n' % (r[0], r[1], r[2]))
+
+        if mesh.hasattr('fn') and mesh.hasattr('vn'):
+            for r in mesh.vn:
+                output.write('vn %f %f %f\n' % (r[0], r[1], r[2]))
+        
+        if garment:
+            coord_filename = f"{garment}_{gender}.npy"
+            with open(coord_filename, 'r') as texture:
+                tex_coords = texture.readlines()
+
+            for i in tex_coords:
+                output.write(i)
 
 def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='male', filename='body'):
-    pass
+    smpl = SMPL4Garment(gender=gender)
+    body,_ = smpl.run(beta=beta, theta=theta)
+    write_obj(filename, body)
 
-def generate_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='male', garment_class='short-pant', filename='garment'):
+def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='male', garment_class='short-pant', filename='garment', save_body=False, body_filename='body'):
     gamma = get_style('000',garment_class=garment_class,gender=gender)
     tn_runner = get_tn_runner(gender=gender, garment_class=garment_class)
     theta_normalized = normalize_y_rotation(theta)
@@ -34,7 +50,9 @@ def generate_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean')
     body, pred_gar = smpl.run(beta=beta, theta=theta, garment_class=garment_class, garment_d=pred_verts_d)
     pred_gar = remove_interpenetration_fast(pred_gar, body)
 
-    pred_gar.write_obj(OUT_PATH + filename + ".obj")
+    write_obj(filename, pred_gar, garment_class, gender)
+    if save_body :
+        write_obj(body_filename, body)
 
 if __name__ == '__main__':
-    generate_garment()
+    generate_body_garment()

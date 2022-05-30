@@ -10,3 +10,6 @@ age weight height dataset 120 000
 https://www.kaggle.com/code/krishnabhatt4/clothes-size-predictions
 
 
+codes
+https://github.com/yanneta/pytorch-tutorials/blob/master/collaborative-filtering-nn.ipynb
+

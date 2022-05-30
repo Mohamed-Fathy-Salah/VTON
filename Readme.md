@@ -13,3 +13,8 @@ https://www.kaggle.com/code/krishnabhatt4/clothes-size-predictions
 codes
 https://github.com/yanneta/pytorch-tutorials/blob/master/collaborative-filtering-nn.ipynb
 
+keggle
+https://www.kaggle.com/code/hortonhearsafoo/fast-ai-lesson-5/notebook
+medium illusteration
+https://medium.com/@hiromi_suenaga/deep-learning-2-part-1-lesson-5-dd904506bee8
+

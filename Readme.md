@@ -17,4 +17,6 @@ keggle
 https://www.kaggle.com/code/hortonhearsafoo/fast-ai-lesson-5/notebook
 medium illusteration
 https://medium.com/@hiromi_suenaga/deep-learning-2-part-1-lesson-5-dd904506bee8
+lecture llusteration
+https://forums.fast.ai/t/deeplearning-lecnotes5/8416
 

@@ -67,7 +67,7 @@ def generate_texture(front_image_path, back_image_path):
     back_garment_mask = get_garment_mask(back_image)
     front_garment_mask = get_garment_mask(front_image)
 
-    dom_color = dominant_color(front_image, back_garment_mask)
+    dom_color = dominant_color(back_image, back_garment_mask)
 
     front_logo_mask = get_logo_mask(front_image, front_garment_mask, dom_color).astype('uint8')
     front_logo = cv2.bitwise_and(front_image, front_image, mask=front_logo_mask)
@@ -110,8 +110,8 @@ def generate_texture(front_image_path, back_image_path):
 
 if __name__ == "__main__":
     front_image_path = "./images/lungs.jpg"
-    # back_image_path = "./images/blackheart.jpg"
-    texture = generate_texture(front_image_path, front_image_path)
+    back_image_path = "./images/blackheart.jpg"
+    texture = generate_texture(front_image_path, back_image_path)
     cv2.imwrite("./results/lungs.png", texture)
 
     

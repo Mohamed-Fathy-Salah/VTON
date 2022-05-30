@@ -57,10 +57,10 @@ def relative_scale(shirt, logo):
 def relative_pos(shirt, logo):
     return int((logo[0] - shirt[0]) / shirt[2] * front_shirt_coordinates[2] + front_shirt_coordinates[0]), int((logo[1] - shirt[1]) / shirt[3] * front_shirt_coordinates[3] + front_shirt_coordinates[1])
 
-if __name__ == "__main__":
-    image_path = "./images/lungs.jpg"
-
+def generate_texture(image_path):
     image = cv2.imread(image_path)
+    # TODO : use os path
+    filename = str(image_path).split("/")[-1].split(".")[0]
 
     garment_mask = get_garment_mask(image)
     dom_color = dominant_color(image, garment_mask)
@@ -77,11 +77,9 @@ if __name__ == "__main__":
     # print(shirt_pos)
     # print(logo_pos)
 
-
     wm, hm = relative_scale(shirt_pos, logo_pos)
     xm, ym = relative_pos(shirt_pos, logo_pos)
-    
-    
+
     # crop logo
     logo = logo[logo_pos[1]:logo_pos[1] + logo_pos[3], logo_pos[0]:logo_pos[0] + logo_pos[2]]
     logo_mask = logo_mask[logo_pos[1]:logo_pos[1] + logo_pos[3], logo_pos[0]:logo_pos[0] + logo_pos[2]]
@@ -95,9 +93,14 @@ if __name__ == "__main__":
     logo[logo_mask == 0] = dom_color
     texture_map[ym : ym + logo.shape[0], xm : xm + logo.shape[1]] = logo
 
-    cv2.imwrite("./results/hi.png", texture_map)
+    cv2.imwrite(f"./results/{filename}.png", texture_map)
     # print(xm, ym, wm, hm)
     # cv2.rectangle(texture_map, (xm, ym), (xm + wm, ym + hm), (0,0,255), 2)
     # cv2.imwrite("./results/hi.png", texture_map)
     # show_image(coord, "coord")
+
+if __name__ == "__main__":
+    image_path = "./images/lungs.jpg"
+    generate_texture(image_path)
+
     

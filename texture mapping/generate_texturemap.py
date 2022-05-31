@@ -47,8 +47,10 @@ def pos(mask):
     xm, ym, wm, hm = cv2.boundingRect(cv2.findNonZero(mask))
     return xm, ym, wm, hm
 
-front_shirt_coordinates = 547, 254, 462, 525
-back_shirt_coordinates = 10, 258, 491, 505
+# front_shirt_coordinates = 547, 254, 462, 525
+# back_shirt_coordinates = 10, 258, 491, 505
+# [0]= back, [1]= front
+shirt_coordinates = [(20, 258, 471, 505), (557, 254, 442, 525)]
 
 # wl / ws * wc, hl / hs * hc
 def relative_scale(shirt, logo, coords):
@@ -59,59 +61,37 @@ def relative_pos(shirt, logo, coords):
     return int((logo[0] - shirt[0]) / shirt[2] * coords[2] + coords[0]), int((logo[1] - shirt[1]) / shirt[3] * coords[3] + coords[1])
 
 def generate_texture(front_image_path, back_image_path):
-    front_image = cv2.imread(front_image_path)
-    back_image = cv2.imread(back_image_path)
-    # TODO : use os path
-    # filename = str(front_image_path).split("/")[-1].split(".")[0]
-
-    back_garment_mask = get_garment_mask(back_image)
-    front_garment_mask = get_garment_mask(front_image)
-
-    dom_color = dominant_color(back_image, back_garment_mask)
-
-    front_logo_mask = get_logo_mask(front_image, front_garment_mask, dom_color).astype('uint8')
-    front_logo = cv2.bitwise_and(front_image, front_image, mask=front_logo_mask)
-    back_logo_mask = get_logo_mask(back_image, back_garment_mask, dom_color).astype('uint8')
-    back_logo = cv2.bitwise_and(back_image, back_image, mask=back_logo_mask)
-
-    front_shirt_pos = pos(front_garment_mask)
-    front_logo_pos = pos(front_logo_mask)
-    back_shirt_pos = pos(back_garment_mask)
-    back_logo_pos = pos(back_logo_mask)
-
-    (wf, hf), (xf, yf) = relative_scale(front_shirt_pos, front_logo_pos, front_shirt_coordinates), relative_pos(front_shirt_pos, front_logo_pos, front_shirt_coordinates)
-    (wb, hb), (xb, yb) = relative_scale(back_shirt_pos, back_logo_pos, back_shirt_coordinates), relative_pos(back_shirt_pos, back_logo_pos, back_shirt_coordinates)
-
-    # crop logo
-    front_logo = front_logo[front_logo_pos[1]:front_logo_pos[1] + front_logo_pos[3], front_logo_pos[0]:front_logo_pos[0] + front_logo_pos[2]]
-    front_logo = cv2.resize(front_logo ,(wf, hf))
-    front_logo_mask = front_logo_mask[front_logo_pos[1]:front_logo_pos[1] + front_logo_pos[3], front_logo_pos[0]:front_logo_pos[0] + front_logo_pos[2]]
-    front_logo_mask = cv2.resize(front_logo_mask ,(wf, hf))
-    back_logo = back_logo[back_logo_pos[1]:back_logo_pos[1] + back_logo_pos[3], back_logo_pos[0]:back_logo_pos[0] + back_logo_pos[2]]
-    back_logo = cv2.resize(back_logo ,(wb, hb))
-    back_logo_mask = back_logo_mask[back_logo_pos[1]:back_logo_pos[1] + back_logo_pos[3], back_logo_pos[0]:back_logo_pos[0] + back_logo_pos[2]]
-    back_logo_mask = cv2.resize(back_logo_mask ,(wb, hb))
-
     texture_map = np.zeros((1024, 1024, 3)) 
-    texture_map[:,:] = dom_color
+    for idx, image_path in enumerate([back_image_path, front_image_path]):
+        image = cv2.imread(image_path)
+        garment_mask = get_garment_mask(image)
 
-    front_logo[front_logo_mask == 0] = dom_color
-    back_logo[back_logo_mask == 0] = dom_color
+        dom_color = dominant_color(image, garment_mask)
 
-    texture_map[yf : yf + front_logo.shape[0], xf : xf + front_logo.shape[1]] = front_logo
-    texture_map[yb : yb + back_logo.shape[0], xb : xb + back_logo.shape[1]] = back_logo
+        logo_mask = get_logo_mask(image, garment_mask, dom_color).astype('uint8')
+        logo = cv2.bitwise_and(image, image, mask=logo_mask)
+
+        shirt_pos = pos(garment_mask)
+        logo_pos = pos(logo_mask)
+
+        (w, h), (x, y) = relative_scale(shirt_pos, logo_pos, shirt_coordinates[idx]), relative_pos(shirt_pos, logo_pos, shirt_coordinates[idx])
+
+        logo = logo[logo_pos[1]:logo_pos[1] + logo_pos[3], logo_pos[0]:logo_pos[0] + logo_pos[2]]
+        logo = cv2.resize(logo ,(w, h))
+        logo_mask = logo_mask[logo_pos[1]:logo_pos[1] + logo_pos[3], logo_pos[0]:logo_pos[0] + logo_pos[2]]
+        logo_mask = cv2.resize(logo_mask ,(w, h))
+
+        texture_map[:,idx*512:idx*512+512] = dom_color
+
+        logo[logo_mask == 0] = dom_color
+        texture_map[y : y + logo.shape[0], x : x + logo.shape[1]] = logo
 
     return texture_map
-    # cv2.imwrite(f"./results/{filename}.png", texture_map)
-    # print(xm, ym, wm, hm)
-    # cv2.rectangle(texture_map, (xm, ym), (xm + wm, ym + hm), (0,0,255), 2)
-    # cv2.imwrite("./results/hi.png", texture_map)
-    # show_image(coord, "coord")
 
 if __name__ == "__main__":
-    front_image_path = "./images/lungs.jpg"
+    front_image_path = "./images/dubai.jpg"
     back_image_path = "./images/blackheart.jpg"
     texture = generate_texture(front_image_path, back_image_path)
-    cv2.imwrite("./results/lungs.png", texture)
+    cv2.imwrite("./results/l.png", texture)
 
     

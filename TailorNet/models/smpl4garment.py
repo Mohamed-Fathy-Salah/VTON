@@ -24,7 +24,7 @@ class SMPL4Garment(object):
             global_var.DATA_DIR, 'skirt_weight.npz'))['w'])
         self.skirt_skinning = self.skirt_weight.dot(self.smpl_base.weights)
 
-    def run(self, beta=None, theta=None, garment_d=None, garment_class=None):
+    def run(self, beta=None, theta=None, garment_d=None, garment_class=None, generate_body=False):
         """Outputs body and garment of specified garment class given theta, beta and displacements."""
         if beta is not None:
             self.smpl_base.betas[:beta.shape[0]] = beta
@@ -39,7 +39,8 @@ class SMPL4Garment(object):
             if 'skirt' not in garment_class:
                 vert_indices = self.class_info[garment_class]['vert_indices']
                 f = self.class_info[garment_class]['f']
-                self.smpl_base.v_personal[vert_indices] = garment_d
+                if generate_body :
+                    self.smpl_base.v_personal[vert_indices] = garment_d
                 garment_m = Mesh(v=self.smpl_base.r[vert_indices], f=f)
             else:
                 # vert_indices = self.class_info[garment_class]['vert_indices']
@@ -55,8 +56,11 @@ class SMPL4Garment(object):
                 garment_m = Mesh(v=verts, f=f)
         else:
             garment_m = None
-        self.smpl_base.v_personal[:] = 0
-        body_m = Mesh(v=self.smpl_base.r, f=self.smpl_base.f)
+
+        body_m = None
+        if generate_body :
+            self.smpl_base.v_personal[:] = 0
+            body_m = Mesh(v=self.smpl_base.r, f=self.smpl_base.f)
         return body_m, garment_m
 
 

@@ -13,8 +13,8 @@ from utils.interpenetration import remove_interpenetration_fast
 
 OUT_PATH = "/content/output"
 
-def write_obj(filename, mesh, garment=None, gender=None):
-    with open(f"{OUT_PATH}/{filename}.obj", 'w') as output:
+def write_obj(mesh, garment=None, gender=None, filename=None):
+    with open(filename, 'w') as output:
         for r in mesh.v: 
             output.write('v %f %f %f\n' % (r[0], r[1], r[2]))
         
@@ -33,12 +33,14 @@ def write_obj(filename, mesh, garment=None, gender=None):
 def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='male', filename='body'):
     smpl = SMPL4Garment(gender=gender)
     body,_ = smpl.run(beta=beta, theta=theta)
-    write_obj(filename, body)
+    return body
 
-def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='male', garment_class='short-pant', filename='garment', save_body=False, body_filename='body'):
-    gamma = get_style('000',garment_class=garment_class,gender=gender)
+def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), size='000', gender='male', garment_class='short-pant', save_body=False):
+    gamma = get_style(size, garment_class=garment_class, gender=gender)
+
     tn_runner = get_tn_runner(gender=gender, garment_class=garment_class)
     theta_normalized = normalize_y_rotation(theta)
+
     with torch.no_grad():
         pred_verts_d = tn_runner.forward(
             thetas=torch.from_numpy(theta_normalized[None, :].astype(np.float32)).cuda(),
@@ -47,12 +49,25 @@ def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('m
         )[0].cpu().numpy()
 
     smpl = SMPL4Garment(gender=gender)
-    body, pred_gar = smpl.run(beta=beta, theta=theta, garment_class=garment_class, garment_d=pred_verts_d)
-    pred_gar = remove_interpenetration_fast(pred_gar, body)
+    body, pred_gar = smpl.run(beta=beta, theta=theta, garment_class=garment_class, garment_d=pred_verts_d, generate_body=save_body)
 
-    write_obj(filename, pred_gar, garment_class, gender)
+    return body, pred_gar
+
+# size [top, bottom]
+# garment_class [top, bottom]
+def run(theta, beta, gender, size, garment, save_body):
+    body, top_gar = generate_body_garment(theta=theta, beta=beta, gender=gender, garment_class=garment[0], size=size[0], save_body=True)
+    _, bottom_gar = generate_body_garment(theta=theta, beta=beta, gender=gender, garment_class=garment[1], size=size[1], save_body=False)
+
+    top_gar = remove_interpenetration_fast(top_gar, body)
+    bottom_gar = remove_interpenetration_fast(bottom_gar, body)
+
+    
+    write_obj(top_gar, garment=garment, gender=gender, filename=f"{OUT_PATH}/{garment[0]}.obj")
+    write_obj(bottom_gar, garment=garment, gender=gender, filename=f"{OUT_PATH}/{garment[1]}.obj")
+
     if save_body :
-        write_obj(body_filename, body)
+        write_obj(body, filename=f"{OUT_PATH}/body.obj")
 
 if __name__ == '__main__':
-    generate_body_garment()
+    run(get_specific_pose(0), get_specific_shape('mean'), 'male', ['000', '000'], ['shirt', 'short-pant'], True)

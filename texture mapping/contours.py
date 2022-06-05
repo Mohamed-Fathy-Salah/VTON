@@ -1,11 +1,18 @@
-from sys import stdin
 import cv2
 import numpy as np
 
 # front_shirt_coordinates = 547, 254, 462, 525
 # back_shirt_coordinates = 10, 258, 491, 505
-# [0]= back, [1]= front
-shirt_coordinates = [(20, 258, 471, 505), (557, 254, 442, 525)]
+coordinates = {
+        'old-t-shirt_female': {
+            'back' : (20, 258, 471, 505),
+            'front': (557, 254, 442, 525)
+        },
+        't-shirt_male': {
+            'back' : (12, 307, 471, 384),
+            'front': (541, 315, 456, 379)
+        },
+}
 
 # wl / ws * wc, hl / hs * hc
 def relative_scale(shirt, logo, coords):
@@ -76,8 +83,10 @@ def get_logo_mask(image, mask, gar_dim):
     # show(mask)
     
 
-def generate_texture_map(front_image_path, back_image_path):
+def generate_texture_map(front_image_path, back_image_path, garment_gender):
     texture_map = np.zeros((1024, 1024, 3)) 
+    garment_coordinates = coordinates[garment_gender]
+    garment_coordinates = [garment_coordinates['back'], garment_coordinates['front']]
     for idx, path in enumerate([back_image_path, front_image_path]):
         image = cv2.imread(path)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -107,8 +116,7 @@ def generate_texture_map(front_image_path, back_image_path):
 
         logo_dim = pos(logo_mask)
 
-        (w, h), (x, y) = relative_scale(gar_dim, logo_dim, shirt_coordinates[idx]), relative_pos(gar_dim, logo_dim, shirt_coordinates[idx])
-
+        (w, h), (x, y) = relative_scale(gar_dim, logo_dim, garment_coordinates[idx]), relative_pos(gar_dim, logo_dim, garment_coordinates[idx])
         
         logo = cv2.bitwise_and(image, image, mask=logo_mask)
         logo = logo[logo_dim[1]:logo_dim[1] + logo_dim[3], logo_dim[0]:logo_dim[0] + logo_dim[2]]
@@ -126,8 +134,9 @@ if __name__ == "__main__":
     # paths = ['./images/lungs.jpg\n']
     # for path in paths:
         # generate_texture_map(path[:-1])
-    front_image_path = './images/10.jpg'
-    back_image_path = './images/A.jpg'
-    texture_map = generate_texture_map(front_image_path, back_image_path)
+    front_image_path = './images/sample1f.jpg'
+    back_image_path = './images/sample1b.jpg'
+    garment_gender = 't-shirt_male'
+    texture_map = generate_texture_map(front_image_path, back_image_path, garment_gender)
     show(texture_map / 255)
-    cv2.imwrite("./results/AB.png", texture_map)
+    cv2.imwrite(f"./results/{garment_gender}/h.png", texture_map)

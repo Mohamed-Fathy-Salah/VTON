@@ -72,4 +72,6 @@ def run(theta, beta, gender, size, garment, save_body):
 if __name__ == '__main__':
     # run(get_specific_pose(0), get_specific_shape('mean'), 'male', ['000', '000'], ['shirt', 'short-pant'], True)
 
-    body, top_gar = generate_body_garment(save_body=True)
+    body, gar = generate_body_garment(save_body=True)
+    write_obj(gar, garment="short-pant", gender="female", filename=f"{OUT_PATH}/short-pant.obj")
+    write_obj(body, filename=f"{OUT_PATH}/female.obj")

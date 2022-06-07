@@ -29,6 +29,10 @@ def write_obj(mesh, garment=None, gender=None, filename=None):
             for i in ft:
               s = f"{i[0]} {i[1]} {i[2]} {i[3]}"
               output.write(s)
+        else:
+            coord_filename = "body_tex_coords.txt"
+            with open(coord_filename) as f:
+                output.write(f.read())
 
 def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='female', filename='body'):
     smpl = SMPL4Garment(gender=gender)

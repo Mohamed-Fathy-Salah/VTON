@@ -12,6 +12,10 @@ coordinates = {
             'back' : (12, 317, 491, 384),
             'front': (551, 325, 436, 379)
         },
+        'short-pant_female': {
+            'back' : (17, 262, 486, 501),
+            'front': (521, 263, 489, 530)
+        }
 }
 
 # wl / ws * wc, hl / hs * hc
@@ -114,18 +118,19 @@ def generate_texture_map(front_image_path, back_image_path, garment_gender):
         
         texture_map[:,idx*512:idx*512+512] = dom_color
 
-        logo_dim = pos(logo_mask)
+        if("shirt" in garment_gender):
+            logo_dim = pos(logo_mask)
 
-        (w, h), (x, y) = relative_scale(gar_dim, logo_dim, garment_coordinates[idx]), relative_pos(gar_dim, logo_dim, garment_coordinates[idx])
-        
-        logo = cv2.bitwise_and(image, image, mask=logo_mask)
-        logo = logo[logo_dim[1]:logo_dim[1] + logo_dim[3], logo_dim[0]:logo_dim[0] + logo_dim[2]]
-        logo = cv2.resize(logo ,(w, h))
-        logo_mask = logo_mask[logo_dim[1]:logo_dim[1] + logo_dim[3], logo_dim[0]:logo_dim[0] + logo_dim[2]]
-        logo_mask = cv2.resize(logo_mask ,(w, h))
+            (w, h), (x, y) = relative_scale(gar_dim, logo_dim, garment_coordinates[idx]), relative_pos(gar_dim, logo_dim, garment_coordinates[idx])
+            
+            logo = cv2.bitwise_and(image, image, mask=logo_mask)
+            logo = logo[logo_dim[1]:logo_dim[1] + logo_dim[3], logo_dim[0]:logo_dim[0] + logo_dim[2]]
+            logo = cv2.resize(logo ,(w, h))
+            logo_mask = logo_mask[logo_dim[1]:logo_dim[1] + logo_dim[3], logo_dim[0]:logo_dim[0] + logo_dim[2]]
+            logo_mask = cv2.resize(logo_mask ,(w, h))
 
-        logo[logo_mask == 0] = dom_color
-        texture_map[y : y + logo.shape[0], x : x + logo.shape[1]] = logo
+            logo[logo_mask == 0] = dom_color
+            texture_map[y : y + logo.shape[0], x : x + logo.shape[1]] = logo
 
     return texture_map 
 
@@ -134,8 +139,8 @@ if __name__ == "__main__":
     # paths = ['./images/lungs.jpg\n']
     # for path in paths:
         # generate_texture_map(path[:-1])
-    front_image_path = './images/lungs.jpg'
-    back_image_path = './images/blackheart.jpg'
+    front_image_path = './images/shirt/lungs.jpg'
+    back_image_path = './images/shirt/blackheart.jpg'
     garment_gender = 't-shirt_male'
     texture_map = generate_texture_map(front_image_path, back_image_path, garment_gender)
     show(texture_map / 255)

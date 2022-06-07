@@ -1,16 +1,16 @@
 import cv2
 import numpy as np
 
-# front_shirt_coordinates = 547, 254, 462, 525
 # back_shirt_coordinates = 10, 258, 491, 505
+# front_shirt_coordinates = 547, 254, 462, 525
 coordinates = {
         'old-t-shirt_female': {
             'back' : (20, 258, 471, 505),
             'front': (557, 254, 442, 525)
         },
         't-shirt_male': {
-            'back' : (12, 307, 471, 384),
-            'front': (541, 315, 456, 379)
+            'back' : (12, 317, 491, 384),
+            'front': (551, 325, 436, 379)
         },
 }
 
@@ -134,8 +134,8 @@ if __name__ == "__main__":
     # paths = ['./images/lungs.jpg\n']
     # for path in paths:
         # generate_texture_map(path[:-1])
-    front_image_path = './images/sample1f.jpg'
-    back_image_path = './images/sample1b.jpg'
+    front_image_path = './images/lungs.jpg'
+    back_image_path = './images/blackheart.jpg'
     garment_gender = 't-shirt_male'
     texture_map = generate_texture_map(front_image_path, back_image_path, garment_gender)
     show(texture_map / 255)

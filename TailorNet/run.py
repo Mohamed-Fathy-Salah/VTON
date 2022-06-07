@@ -30,12 +30,12 @@ def write_obj(mesh, garment=None, gender=None, filename=None):
               s = f"{i[0]} {i[1]} {i[2]} {i[3]}"
               output.write(s)
 
-def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='male', filename='body'):
+def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='female', filename='body'):
     smpl = SMPL4Garment(gender=gender)
     body,_ = smpl.run(beta=beta, theta=theta)
     return body
 
-def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), size='000', gender='male', garment_class='short-pant', save_body=False):
+def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), size='000', gender='female', garment_class='short-pant', save_body=False):
     gamma = get_style(size, garment_class=garment_class, gender=gender)
 
     tn_runner = get_tn_runner(gender=gender, garment_class=garment_class)
@@ -70,4 +70,6 @@ def run(theta, beta, gender, size, garment, save_body):
         write_obj(body, filename=f"{OUT_PATH}/body.obj")
 
 if __name__ == '__main__':
-    run(get_specific_pose(0), get_specific_shape('mean'), 'male', ['000', '000'], ['shirt', 'short-pant'], True)
+    # run(get_specific_pose(0), get_specific_shape('mean'), 'male', ['000', '000'], ['shirt', 'short-pant'], True)
+
+    body, top_gar = generate_body_garment(save_body=True)

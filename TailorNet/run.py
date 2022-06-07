@@ -14,25 +14,17 @@ from utils.interpenetration import remove_interpenetration_fast
 OUT_PATH = "/content/output"
 
 def write_obj(mesh, garment=None, gender=None, filename=None):
+    if garment:
+        coord_filename = f"{garment}_{gender}.txt"
+    else:
+        coord_filename = "body_tex_coords.txt"
+
     with open(filename, 'w') as output:
         for r in mesh.v: 
             output.write('v %f %f %f\n' % (r[0], r[1], r[2]))
         
-        if garment:
-            coord_filename = f"{garment}_{gender}"
-            vt = np.load(f"{coord_filename}_vt.npy")
-            ft = np.load(f"{coord_filename}_ft.npy")
-            for i in vt:
-              s = f"{i[0]} {i[1]} {i[2]}"
-              output.write(s)
-            
-            for i in ft:
-              s = f"{i[0]} {i[1]} {i[2]} {i[3]}"
-              output.write(s)
-        else:
-            coord_filename = "body_tex_coords.txt"
-            with open(coord_filename) as f:
-                output.write(f.read())
+        with open(coord_filename) as f:
+            output.write(f.read())
 
 def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='female', filename='body'):
     smpl = SMPL4Garment(gender=gender)

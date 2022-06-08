@@ -59,15 +59,15 @@ def run(theta, beta, gender, size, garment, save_body):
     bottom_gar = remove_interpenetration_fast(bottom_gar, body)
 
     
-    write_obj(top_gar, garment=garment, gender=gender, filename=f"{OUT_PATH}/{garment[0]}.obj")
-    write_obj(bottom_gar, garment=garment, gender=gender, filename=f"{OUT_PATH}/{garment[1]}.obj")
+    write_obj(top_gar, garment=garment[0], gender=gender, filename=f"{OUT_PATH}/{garment[0]}.obj")
+    write_obj(bottom_gar, garment=garment[1], gender=gender, filename=f"{OUT_PATH}/{garment[1]}.obj")
 
     if save_body :
         write_obj(body, filename=f"{OUT_PATH}/body.obj")
 
 if __name__ == '__main__':
-    # run(get_specific_pose(0), get_specific_shape('mean'), 'male', ['000', '000'], ['shirt', 'short-pant'], True)
+    run(get_specific_pose(0), get_specific_shape('mean'), 'female', ['000', '000'], ['t-shirt', 'short-pant'], True)
 
-    body, gar = generate_body_garment(save_body=True)
-    write_obj(gar, garment="short-pant", gender="female", filename=f"{OUT_PATH}/short-pant.obj")
-    write_obj(body, filename=f"{OUT_PATH}/female.obj")
+    # body, gar = generate_body_garment(save_body=True)
+    # write_obj(gar, garment="short-pant", gender="female", filename=f"{OUT_PATH}/short-pant.obj")
+    # write_obj(body, filename=f"{OUT_PATH}/female.obj")

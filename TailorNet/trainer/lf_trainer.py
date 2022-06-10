@@ -4,8 +4,8 @@ import os
 import torch
 from trainer import base_trainer
 
-device = torch.device("cuda:0")
-# device = torch.device("cpu")
+# device = torch.device("cuda:0")
+device = torch.device("cpu")
 
 
 class LFTrainer(base_trainer.Trainer):

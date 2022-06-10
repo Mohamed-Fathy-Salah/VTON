@@ -16,8 +16,8 @@ from utils.logger import TailorNetLogger
 from utils import sio
 import global_var
 
-device = torch.device("cuda:0")
-# device = torch.device("cpu")
+# device = torch.device("cuda:0")
+device = torch.device("cpu")
 
 
 class Trainer(object):

@@ -27,9 +27,9 @@ class TailorNetModel(object):
         pivots_ds = ShapeStyleCanonPose(garment_class=garment_class, gender=gender,
                                         shape_style_list_path='pivots.txt')
 
-        self.train_betas = pivots_ds.betas.cuda()
-        self.train_gammas = pivots_ds.gammas.cuda()
-        self.basis = pivots_ds.unpose_v.cuda()
+        self.train_betas = pivots_ds.betas #.cuda()
+        self.train_gammas = pivots_ds.gammas #.cuda()
+        self.basis = pivots_ds.unpose_v #.cuda()
         self.train_pivots = pivots_ds.ss_list
 
         self.hf_runners = [
@@ -51,8 +51,8 @@ class TailorNetModel(object):
 
         with torch.no_grad():
             pred_disp_hf_pivot = torch.stack([
-                rr.forward(thetas.cuda(), betas.cuda(),
-                           gammas.cuda()).view(bs, -1, 3)
+                rr.forward(thetas, betas,
+                           gammas).view(bs, -1, 3)
                 for rr in self.hf_runners
             ]).transpose(0, 1)
 

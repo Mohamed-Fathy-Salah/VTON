@@ -12,8 +12,8 @@ from dataset.static_pose_shape_final import OneStyleShapeHF
 import global_var
 from trainer import base_trainer
 
-device = torch.device("cuda:0")
-# device = torch.device("cpu")
+# device = torch.device("cuda:0")
+device = torch.device("cpu")
 
 
 class HFTrainer(base_trainer.Trainer):

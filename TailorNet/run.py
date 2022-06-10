@@ -39,9 +39,9 @@ def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('m
 
     with torch.no_grad():
         pred_verts_d = tn_runner.forward(
-            thetas=torch.from_numpy(theta_normalized[None, :].astype(np.float32)).cuda(),
-            betas=torch.from_numpy(beta[None, :].astype(np.float32)).cuda(),
-            gammas=torch.from_numpy(gamma[None, :].astype(np.float32)).cuda(),
+            thetas=torch.from_numpy(theta_normalized[None, :].astype(np.float32)), #.cuda(),
+            betas=torch.from_numpy(beta[None, :].astype(np.float32)), #.cuda(),
+            gammas=torch.from_numpy(gamma[None, :].astype(np.float32)), #.cuda(),
         )[0].cpu().numpy()
 
     smpl = SMPL4Garment(gender=gender)

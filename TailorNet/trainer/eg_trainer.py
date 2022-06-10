@@ -12,8 +12,8 @@ import base_trainer
 from ss2g_trainer import get_best_runner as ss2g_runner
 from models import ops
 
-device = torch.device("cuda:0")
-# device = torch.device("cpu")
+# device = torch.device("cuda:0")
+device = torch.device("cpu")
 
 
 class EGTrainer(base_trainer.Trainer):

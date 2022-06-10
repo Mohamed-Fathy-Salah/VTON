@@ -11,8 +11,8 @@ import global_var
 from trainer import base_trainer
 from models import ops
 
-device = torch.device("cuda:0")
-# device = torch.device("cpu")
+# device = torch.device("cuda:0")
+device = torch.device("cpu")
 
 
 class SS2GTrainer(base_trainer.Trainer):

@@ -39,7 +39,8 @@ def evaluate():
     # from trainer.base_trainer import get_best_runner as baseline_runner
     # runner = baseline_runner("/BS/cpatel/work/data/learn_anim/{}_{}_weights/tn_orig_baseline/{}_{}".format(garment_class, gender, garment_class, gender))
 
-    device = torch.device('cuda:0')
+    # device = torch.device('cuda:0')
+    device = torch.device('cpu')
     with torch.no_grad():
         for i, inputs in enumerate(dataloader):
             gt_verts, thetas, betas, gammas, _ = inputs
@@ -83,7 +84,7 @@ def evaluate_save():
     # from trainer.base_trainer import get_best_runner as baseline_runner
     # runner = baseline_runner("/BS/cpatel/work/data/learn_anim/{}_{}_weights/tn_orig_baseline/{}_{}".format(garment_class, gender, garment_class, gender))
 
-    device = torch.device('cuda:0')
+    device = torch.device('cpu')
     with torch.no_grad():
         for i, inputs in enumerate(dataloader):
             gt_verts, thetas, betas, gammas, idxs = inputs

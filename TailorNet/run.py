@@ -51,16 +51,17 @@ def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('m
 
 # size [top, bottom]
 # garment_class [top, bottom]
-def run(theta, beta, gender, size, garment, save_body):
-    body, top_gar = generate_body_garment(theta=theta, beta=beta, gender=gender, garment_class=garment[0], size=size[0], save_body=True)
-    _, bottom_gar = generate_body_garment(theta=theta, beta=beta, gender=gender, garment_class=garment[1], size=size[1], save_body=False)
+def run(theta, beta, gender, sizes, garments, save_body):
+    assert len(sizes) != len(garments) and sizes
 
+    body, top_gar = generate_body_garment(theta=theta, beta=beta, gender=gender, garment_class=garments[0], size=sizes[0], save_body=True)
     top_gar = remove_interpenetration_fast(top_gar, body)
-    bottom_gar = remove_interpenetration_fast(bottom_gar, body)
+    write_obj(top_gar, garment=garments[0], gender=gender, filename=f"{OUT_PATH}/{garments[0]}.obj")
 
-    
-    write_obj(top_gar, garment=garment[0], gender=gender, filename=f"{OUT_PATH}/{garment[0]}.obj")
-    write_obj(bottom_gar, garment=garment[1], gender=gender, filename=f"{OUT_PATH}/{garment[1]}.obj")
+    if len(sizes) > 1:
+        _, bottom_gar = generate_body_garment(theta=theta, beta=beta, gender=gender, garment_class=garments[1], size=sizes[1], save_body=False)
+        bottom_gar = remove_interpenetration_fast(bottom_gar, body)
+        write_obj(bottom_gar, garment=garments[1], gender=gender, filename=f"{OUT_PATH}/{garments[1]}.obj")
 
     if save_body :
         write_obj(body, filename=f"{OUT_PATH}/body.obj")

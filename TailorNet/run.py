@@ -14,6 +14,16 @@ from utils.interpenetration import remove_interpenetration_fast
 OUT_PATH = "../../output"
 TXT_PATH = "../../dataset/txt/"
 
+garment_gammas = {
+        't-shirt_male' : {
+            'S' : np.array([-2. , 0. , 1.5 , 0. ]),
+            'M' : np.array([-1.9 , 0. , 1.5 , 0. ]),
+            'L' : np.array([-0.9 , 0. , 1.5 , 0. ]),
+            'XL' : np.array([0.4, 0. , 1.5 ,0. ]),
+            'XXL' : np.array([0.9, 0. , 1.5 ,0. ]),
+            },
+        }
+
 def write_obj(mesh, garment=None, gender=None, filename=None):
     if garment:
         coord_filename = f"{TXT_PATH}{garment}_{gender}.txt"
@@ -32,8 +42,9 @@ def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), g
     body,_ = smpl.run(beta=beta, theta=theta)
     return body
 
-def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), size='000', gender='female', garment_class='short-pant', save_body=False):
-    gamma = get_style(size, garment_class=garment_class, gender=gender)
+def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), size='M', gender='female', garment_class='short-pant', save_body=False):
+    garment_gender = f"{garment_class}_{gender}"
+    gamma = garment_gammas[garment_gender] if garment_gender in garment_gammas else get_style("000", garment_class=garment_class, gender=gender)
 
     tn_runner = get_tn_runner(gender=gender, garment_class=garment_class)
     theta_normalized = normalize_y_rotation(theta)

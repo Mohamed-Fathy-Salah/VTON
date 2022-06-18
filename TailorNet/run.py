@@ -11,6 +11,7 @@ from models.smpl4garment import SMPL4Garment
 from dataset.canonical_pose_dataset import get_style
 from utils.interpenetration import remove_interpenetration_fast
 
+
 OUT_PATH = "../../output"
 TXT_PATH = "../../dataset/txt/"
 
@@ -38,9 +39,15 @@ def write_obj(mesh, garment=None, gender=None, filename=None):
             output.write(f.read())
 
 def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), gender='female'):
-    smpl = SMPL4Garment(gender=gender)
-    body,_ = smpl.run(beta=beta, theta=theta)
-    return body
+    from smpl_lib.ch_smpl import Smpl
+    from utils.smpl_paths import SmplPaths
+    from psbody.mesh import Mesh
+    smpl_model = SmplPaths(gender=gender).get_hres_smpl_model_data()
+    smpl_base = Smpl(smpl_model)
+    smpl_base.betas[:] = beta
+    smpl_base.pose[:] = theta
+    body_m = Mesh(v=smpl_base.r, f=smpl_base.f)
+    return body_m
 
 def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), size='M', gender='female', garment_class='short-pant', save_body=False):
     garment_gender = f"{garment_class}_{gender}"
@@ -91,8 +98,10 @@ def run(theta, beta, gender, top_garment, bottom_garment, save_body):
         write_obj(body, filename=f"{OUT_PATH}/body.obj")
 
 if __name__ == '__main__':
-    run(get_specific_pose(0), get_specific_shape('mean'), 'female', ['000', '000'], ['t-shirt', 'short-pant'], True)
+    # run(get_specific_pose(0), get_specific_shape('mean'), 'female', ['000', '000'], ['t-shirt', 'short-pant'], True)
 
+    body = generate_body(gender='male')
+    body.write_obj(f"{OUT_PATH}/body.obj")
     # body, gar = generate_body_garment(garment_class='pant', gender='male', save_body=True)
     # body.write_obj(f"{OUT_PATH}/pant.obj")
     # gar.write_obj(f"{OUT_PATH}/pant.obj")

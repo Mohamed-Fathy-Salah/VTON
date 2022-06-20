@@ -95,6 +95,9 @@ def generate_texture_map(front_image_path=None, back_image_path=None,
     dom_color = None
 
     for idx, path in enumerate([back_image_path, front_image_path]):
+        if not path:
+            continue
+
         image = cv2.imread(path)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 

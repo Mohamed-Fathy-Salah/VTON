@@ -51,7 +51,7 @@ def generate_body(theta=get_specific_pose(0), beta=get_specific_shape('mean'), g
 
 def generate_body_garment(theta=get_specific_pose(0), beta=get_specific_shape('mean'), size='M', gender='female', garment_class='short-pant', save_body=False):
     garment_gender = f"{garment_class}_{gender}"
-    gamma = garment_gammas[garment_gender] if garment_gender in garment_gammas else get_style("000", garment_class=garment_class, gender=gender)
+    gamma = garment_gammas[garment_gender][size] if garment_gender in garment_gammas else get_style("000", garment_class=garment_class, gender=gender)
 
     tn_runner = get_tn_runner(gender=gender, garment_class=garment_class)
     theta_normalized = normalize_y_rotation(theta)
@@ -100,8 +100,9 @@ def run(theta, beta, gender, top_garment, bottom_garment, save_body):
 if __name__ == '__main__':
     # run(get_specific_pose(0), get_specific_shape('mean'), 'female', ['000', '000'], ['t-shirt', 'short-pant'], True)
 
-    body = generate_body(gender='male')
-    body.write_obj(f"{OUT_PATH}/body.obj")
+    print(get_style("000", garment_class='pant', gender='male'))
+    # body = generate_body(gender='male')
+    # body.write_obj(f"{OUT_PATH}/body.obj")
     # body, gar = generate_body_garment(garment_class='pant', gender='male', save_body=True)
     # body.write_obj(f"{OUT_PATH}/pant.obj")
     # gar.write_obj(f"{OUT_PATH}/pant.obj")
